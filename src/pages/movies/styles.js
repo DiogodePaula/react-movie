@@ -35,4 +35,9 @@ export const Button = styled.button`
   color: #cf001f;
   padding: 10px 20px;
   font-weight: 700;
+  width: 200px;
+`;
+
+export const Table = styled.table`
+  color: black;
 `;

@@ -7,7 +7,6 @@ import login from './login/reducer';
 const reducers = combineReducers({
   login,
 });
-
 const store = createStore(persistedReducer(reducers));
 const persistor = persistStore(store);
 

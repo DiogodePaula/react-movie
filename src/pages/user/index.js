@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
+import { FormGroup, Label, Input } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
@@ -74,7 +74,7 @@ const Example = () => {
         <FormGroup>
           <Label for="examplePassword">Password</Label>
           <Input
-            type="text"
+            type="password"
             value={password}
             // id="examplePassword"
             placeholder="password"
@@ -83,7 +83,7 @@ const Example = () => {
         </FormGroup>
         <Button onClick={handleUser}>Cadastrar</Button>
         <Link to="/login" style={{ paddingLeft: '10px' }}>
-          <Button>Logar</Button>
+          <Button>Voltar</Button>
         </Link>
       </Article>
     </div>

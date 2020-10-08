@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 import {
   Form,
   FormGroup,
@@ -10,31 +12,45 @@ import {
   NavLink,
   Col,
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import api from '../../services/api';
+
 import { Div, Article, Section, Img, Button } from './styles';
 import img from '../image/vingadores.jpg';
 import logo from '../image/logo.png';
 
+import api from '../../services/api';
 import * as loginActions from '../../store/login/action';
 
-export default () => {
+const Movies = () => {
   const dispatch = useDispatch();
 
-  const [movies, setMovies] = useState('');
-
   const [name, setName] = useState('');
-  const [watched, setWatched] = useState('');
+  const [watched, setWatched] = useState(false);
   const [type, setType] = useState('');
   const [duration, setDuration] = useState('');
+  const [movies, setMovies] = useState([]);
 
-  async function handleMovie() {
+  const user_uid = localStorage.getItem('userUid');
+
+  async function handleMovie(e) {
+    e.preventDefault();
+
     await api
-      .post('/movies', { name, watched, type, duration })
-      .then((response) => setMovies([...movies, response.data]))
-      .catch((error) => console.log(error));
+      .post(
+        '/movies',
+        { name, watched, type, duration, user_uid },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('tokenAuth')}`,
+          },
+        }
+      )
+      .then((response) => {
+        setMovies([...movies, response.data.movie]);
+        alert('Filme cadatsrado com sucesso!!');
+      })
+      .catch((error) => alert('Erro ao cadastrar filme.', error));
     setName('');
-    setWatched('');
+    setWatched(false);
     setType('');
     setDuration('');
   }
@@ -54,14 +70,23 @@ export default () => {
             <Img src={logo} alt="FILMESFLIX" className="w-75" />
           </NavItem>
           <NavItem>
-            <NavLink style={{ paddingLeft: '10%' }} className="ml-auto">
+            <Link
+              to="/movie"
+              style={{ paddingLeft: '10%' }}
+              className="ml-auto"
+            >
+              <Button type="button">Meus filmes</Button>
+            </Link>
+          </NavItem>
+          <NavItem>
+            <NavItem style={{ paddingLeft: '20%' }} className="ml-auto">
               <Button
                 type="button"
                 onClick={() => dispatch(loginActions.logout())}
               >
                 Logout
               </Button>
-            </NavLink>
+            </NavItem>
           </NavItem>
         </Nav>
         <hr />
@@ -92,36 +117,24 @@ export default () => {
               onChange={(e) => setDuration(e.target.value)}
             />
           </FormGroup>
-          <FormGroup check style={{ paddingLeft: '0' }}>
-            <Label check>Já assistiu</Label>
-            <Input
-              type="check"
-              value={watched}
-              onChange={(e) => setWatched(e.target.value)}
-            />
-            <br />
 
+          <FormGroup check style={{ paddingLeft: '0' }}>
             <FormGroup row>
-              <div
-                style={{ marginLeft: '1em', marginBottom: '1em' }}
-                htmlFor="checkbox2"
-                sm={2}
-              >
-                Já assistiu?
-              </div>
               <Col sm={{ size: 10 }}>
                 <FormGroup check>
                   <Label check>
-                    <Input type="checkbox" id="checkbox2" /> Sim
-                  </Label>
-                  <br />
-                  <Label check>
-                    <Input type="checkbox" id="checkbox2" /> Não
+                    <Input
+                      type="checkbox"
+                      value={watched}
+                      onChange={(e) => setWatched(e.target.checked)}
+                    />
+                    Marque esta opção se você já assistiu!
                   </Label>
                 </FormGroup>
               </Col>
             </FormGroup>
           </FormGroup>
+
           <div style={{ width: '150px', margin: 'auto', padding: '1.5em' }}>
             <Button
               onClick={handleMovie}
@@ -138,3 +151,5 @@ export default () => {
     </Section>
   );
 };
+
+export default Movies;

@@ -1,4 +1,4 @@
-import { Form, FormGroup, Label, Input } from 'reactstrap';
+import { FormGroup, Label, Input } from 'reactstrap';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -25,7 +25,9 @@ const Example = () => {
 
       if (response.data.token) {
         dispatch(loginActions.login(response.data.token));
+        localStorage.setItem('tokenAuth', response.data.token);
       }
+      localStorage.setItem('userUid', response.data.user.uid);
     } catch (error) {
       alert('error ao tentar logar');
     }
@@ -54,25 +56,23 @@ const Example = () => {
                   type="text"
                   value={email}
                   placeholder="email"
+                  style={{ width: '100%' }}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </FormGroup>
               <FormGroup>
                 <Label for="exampleEmail">Password</Label>
                 <Input
-                  type="text"
+                  type="password"
                   value={password}
                   placeholder="password"
+                  style={{ width: '100%' }}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </FormGroup>
               <Button onClick={handleLogin}>Login</Button>
-              <Link
-                to="/cadastro"
-                onClick={handleLogin}
-                style={{ paddingLeft: '10px' }}
-              >
-                <Button>Cadastrar usuário</Button>
+              <Link to="/cadastro" style={{ paddingLeft: '10px' }}>
+                <Button>Criar conta</Button>
               </Link>
             </Article>
           </section>
